@@ -38,6 +38,17 @@ Vagrant.configure("2") do |config|
     
   SHELL
 
+  config.trigger.after :up do |trigger|
+    trigger.name = "Launching App"
+    trigger.info = "Running the TODO app setup script"
+    trigger.run_remote = {privileged: false, inline: "
+    # Install dependencies and launch
+    cd /vagrant
+	poetry install
+	poetry run flask run --host='0.0.0.0'
+  "}
+  end
+
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
