@@ -14,6 +14,30 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "hashicorp/bionic64"
 
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+  sudo apt-get update
+  
+  # Install pyenv prerequisites
+  sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev  
+
+  # Install pyenv
+  git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+
+  # Update profile to set environment variables and init pyenv when user session starts
+  echo 'export PYENV_ROOT=\"\$HOME/.pyenv\"' >> ~/.profile
+  echo 'export PATH=\"\$PYENV_ROOT/bin:\$PATH\"' >> ~/.profile
+  echo 'eval \"\$(pyenv init --path)\"' >>~/.profile
+  
+  # In this provisioning script, install custom python version & set as global default
+  source ~/.profile
+  pyenv install 3.10.1
+  pyenv global 3.10.1		
+  
+  # install poetry
+  curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+    
+  SHELL
+
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -24,6 +48,7 @@ Vagrant.configure("2") do |config|
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # NOTE: This will enable public access to the opened port
   # config.vm.network "forwarded_port", guest: 80, host: 8080
+   config.vm.network "forwarded_port", guest: 5000, host: 5000
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
