@@ -66,13 +66,19 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
 
 ## Running in Docker
 
-This can also be run using Docker and gunicorn.
+This can also be run using Docker.
+In development mode, it runs using flask and binds to a folder on the host, to allow for speedy re-coding without rebuilding the container.
+In production mode, the code is copied to the container, and it runs gunicorn.
 Steps to make this work are:
 - install Docker from [here](https://www.docker.com/products/docker-desktop)
-- from your shell, build the docker image, eg:
-   docker build --tag todo-app .
-- from your shell, run the conatiner, eg:
-   docker run -d -p 5000:5000 --env-file .env todo-app
+- build development and production containers as follows:
+`docker build --target development --tag todo-app:dev .`
+and
+`docker build --target production --tag todo-app:prod .`
+- run the containers as follows (examples are from a DOS cmd prompt):
+`docker run --env-file .env -d -p:5000:5000 --mount type=bind,source=%cd%\todo_app,target=/todo_app todo-app:dev`
+and
+`docker run --env-file .env -d -p:5000:5000 todo-app:prod`
 
 ## Running the Tests
 
