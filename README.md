@@ -64,6 +64,16 @@ You should see output similar to the following:
 ```
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
 
+## Running in Docker
+
+This can also be run using Docker and gunicorn.
+Steps to make this work are:
+- install Docker from [here](https://www.docker.com/products/docker-desktop)
+- from your shell, build the docker image, eg:
+   docker build --tag todo-app .
+- from your shell, run the conatiner, eg:
+   docker run -d -p 5000:5000 --env-file .env todo-app
+
 ## Running the Tests
 
 Tests can be run as a whole by running `poetry run pytest`. To skip the slow end to end tests, you can run `poetry run pytest tests`.
